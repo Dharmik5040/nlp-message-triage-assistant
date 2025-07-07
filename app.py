@@ -1,18 +1,20 @@
 import streamlit as st
+import pandas as pd
 import joblib
 import re
 import nltk
 from nltk.corpus import stopwords
+import matplotlib.pyplot as plt
 
 # Load model and vectorizer
 model = joblib.load("triage_model.pkl")
 vectorizer = joblib.load("tfidf_vectorizer.pkl")
 
-# Download stopwords
+# Download NLTK stopwords
 nltk.download("stopwords")
 stop_words = set(stopwords.words("english"))
 
-# Text preprocessing
+# Clean function
 def clean_text(text):
     text = text.lower()
     text = re.sub(r"http\S+|www\S+", "", text)
@@ -21,58 +23,49 @@ def clean_text(text):
     text = " ".join([word for word in text.split() if word not in stop_words])
     return text
 
-# Confidence color/label
-def confidence_level(score):
-    if score >= 0.85:
-        return "🟢 High"
-    elif score >= 0.65:
-        return "🟠 Medium"
+# App layout
+st.set_page_config(page_title="📊 Message Insights Dashboard", layout="wide")
+st.title("📊 NLP Healthcare Message Insights Dashboard")
+st.write("Upload a CSV file with a column `message` to classify and analyze messages automatically.")
+
+# Upload CSV
+uploaded_file = st.file_uploader("📤 Upload CSV", type=["csv"])
+
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+
+    if 'message' not in df.columns:
+        st.error("CSV must contain a 'message' column.")
     else:
-        return "🔴 Low"
+        # Process messages
+        df['cleaned'] = df['message'].astype(str).apply(clean_text)
+        X = vectorizer.transform(df['cleaned'])
+        df['Predicted Tag'] = model.predict(X)
+        df['Confidence'] = model.predict_proba(X).max(axis=1)
 
-# Page setup
-st.set_page_config(page_title="NLP Message Triage Assistant", page_icon="📬")
+        # Add emoji confidence levels
+        def confidence_level(c):
+            if c >= 0.85:
+                return "🟢 High"
+            elif c >= 0.65:
+                return "🟠 Medium"
+            else:
+                return "🔴 Low"
 
-# Title
-st.title("📬 NLP Message Triage Assistant")
-st.write("This assistant classifies patient/staff messages into categories like refill request, appointment, or complaint.")
+        df['Confidence Level'] = df['Confidence'].apply(confidence_level)
 
-# Sidebar
-st.sidebar.title("ℹ️ About")
-st.sidebar.markdown(
-    """
-This app uses an NLP model to help clinics/pharmacies sort incoming messages by intent.
+        # Show result table
+        st.success(f"✅ Processed {len(df)} messages")
+        st.dataframe(df[['message', 'Predicted Tag', 'Confidence', 'Confidence Level']])
 
-**Confidence** is the model's certainty:
-- 🟢 High → confident prediction
-- 🟠 Medium → likely but review
-- 🔴 Low → manual review advised
-    """
-)
+        # Pie chart
+        st.subheader("📌 Message Tag Distribution")
+        tag_counts = df['Predicted Tag'].value_counts()
+        fig, ax = plt.subplots()
+        tag_counts.plot.pie(autopct="%1.1f%%", ax=ax)
+        ax.set_ylabel("")
+        st.pyplot(fig)
 
-# Sample message options
-samples = [
-    "",
-    "Can I refill my diabetes meds?",
-    "The pharmacy was closed again!",
-    "Is Dr. Patel available Monday?",
-    "Thanks for the reminder!",
-    "Why are my pills always late?"
-]
-sample = st.selectbox("🧪 Try a sample message:", samples)
-message = st.text_area("✍️ Enter or paste message:", value=sample, height=150)
-
-# Predict button
-if st.button("🔍 Predict Category"):
-    if message.strip() == "":
-        st.warning("⚠️ Please enter a message.")
-    else:
-        cleaned = clean_text(message)
-        vector = vectorizer.transform([cleaned])
-        prediction = model.predict(vector)[0]
-        confidence = model.predict_proba(vector).max()
-        level = confidence_level(confidence)
-
-        st.success(f"📌 Predicted Tag: **{prediction}**")
-        st.metric("📊 Confidence Score", f"{confidence*100:.1f}%", delta=level)
-        st.caption("Confidence = how sure the model is. Use it to automate, flag, or review intelligently.")
+        # Download CSV
+        csv = df.to_csv(index=False).encode("utf-8")
+        st.download_button("📥 Download Tagged Messages", data=csv, file_name="tagged_messages.csv", mime="text/csv")
