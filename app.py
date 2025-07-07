@@ -29,37 +29,42 @@ def confidence_level(c):
     else:
         return "🔴 Low"
 
-# App layout
-st.set_page_config(page_title="NLP Message Insights", layout="wide")
-st.title("📊 NLP Healthcare Message Insights Dashboard")
+# Streamlit UI setup
+st.set_page_config(page_title="📊 NLP Message Insights", layout="wide")
+st.title("NLP Healthcare Message Insights Dashboard")
 
-# Sidebar info
+# Sidebar
 st.sidebar.title("ℹ️ About This App")
 st.sidebar.info(
-    "This tool uses NLP to classify healthcare-related messages into categories like:\n"
+    "This tool uses NLP to classify patient and staff messages into categories such as:\n"
     "- Refill Request\n"
     "- Appointment Inquiry\n"
     "- Complaint\n\n"
-    "Useful for clinics/pharmacies to auto-triage and manage message loads.\n\n"
-    "🟢 High Confidence = very likely accurate\n"
-    "🟠 Medium = worth reviewing\n"
-    "🔴 Low = manual check recommended"
+    "It helps clinics and pharmacies prioritize and respond efficiently.\n\n"
+    "**Confidence Levels**:\n"
+    "🟢 High = strong prediction\n"
+    "🟠 Medium = moderate certainty\n"
+    "🔴 Low = should be manually reviewed"
 )
 
+# Mode selector
 mode = st.radio("Choose Mode:", ["🔹 Single Message", "📤 Upload CSV"])
 
-# --- Single message mode ---
+# --- Single Message Prediction ---
 if mode == "🔹 Single Message":
     examples = [
         "",
         "Can I refill my diabetes meds?",
-        "Is Dr. Mehta available on Friday?",
-        "Why are my pills late again?",
-        "Thank you for the reminder!",
         "The pharmacy was closed again!",
-        "Can you send my prescription to another pharmacy?",
+        "Is Dr. Patel available Friday?",
+        "Thanks for the reminder!",
         "Hi",
-        "How long will delivery take?"
+        "You gave me the wrong dosage.",
+        "What's the status?",
+        "Hello",
+        "How long until I get my meds?",
+        "Please cancel my appointment.",
+        "The medicine didn't work."
     ]
     sample = st.selectbox("🧪 Try a sample message:", examples)
     message = st.text_area("✍️ Or enter your own message:", value=sample, height=150)
@@ -78,17 +83,17 @@ if mode == "🔹 Single Message":
             st.metric("📊 Confidence Score", f"{confidence*100:.1f}%", delta=level)
 
             if confidence < 0.5:
-                st.warning("⚠️ Low confidence — message may need manual review.")
+                st.warning("⚠️ Low confidence — this prediction may require manual review.")
 
-# --- Bulk CSV mode ---
+# --- Bulk CSV Upload Prediction ---
 else:
-    uploaded_file = st.file_uploader("📥 Upload a CSV with a 'message' column", type=["csv"])
+    uploaded_file = st.file_uploader("📥 Upload a CSV file with a column named 'message'", type=["csv"])
 
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file)
 
         if 'message' not in df.columns:
-            st.error("CSV must contain a 'message' column.")
+            st.error("The CSV must contain a 'message' column.")
         else:
             df['cleaned'] = df['message'].astype(str).apply(clean_text)
             X = vectorizer.transform(df['cleaned'])
