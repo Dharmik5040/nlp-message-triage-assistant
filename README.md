@@ -1,80 +1,76 @@
 # 📬 NLP Message Triage Assistant
 
-This Streamlit app uses a trained NLP model to classify incoming messages (from patients or staff) into categories like `Refill Request`, `Appointment Inquiry`, or `Complaint`. It's designed as a practical AI assistant for healthcare or pharmacy operations.
+An AI-powered assistant that classifies healthcare-related messages using Natural Language Processing (NLP).  
+Designed for clinics and pharmacies to **automatically tag, triage, and route** incoming patient or staff messages.
 
-🔗 **Live App**: [Try it now](https://nlp-message-triage-assistant-demo.streamlit.app/)
-
----
-
-## 🧠 Problem Statement
-
-Clinics and pharmacies receive hundreds of daily messages. Manual triage slows down responses and wastes time. This assistant uses natural language processing to automatically tag messages and help staff prioritize them efficiently.
+🌐 **Live Demo**: [Try the App](https://nlp-message-triage-assistant-demo.streamlit.app/)  
+👤 **LinkedIn**: [Dharmik Shah](https://www.linkedin.com/in/dharmikshah4/)  
+📫 **Email**: dharmik5040@gmail.com
 
 ---
 
-## 💾 Example Inputs
+## 💡 What It Does
 
-| Message | Predicted Tag |
-|--------|----------------|
-| “Can I refill my BP meds today?” | Refill Request |
-| “Is the doctor available tomorrow?” | Appointment Inquiry |
-| “You sent the wrong meds again.” | Complaint |
+This app reads free-text messages and automatically predicts categories like:
 
----
+- 🩺 Appointment Inquiry  
+- 💊 Refill Request  
+- 📢 Complaint  
+- 🙏 Gratitude or Feedback  
+- ❓ General Inquiry
 
-## ⚙️ How It Works
-
-- Cleans and processes text using NLTK
-- Converts messages to TF-IDF vectors
-- Predicts message category using Logistic Regression
-- Shows confidence score
-- Downloadable CSV of prediction result
+It helps healthcare teams **reduce manual sorting**, respond faster, and **prioritize messages** that need urgent human attention.
 
 ---
 
-## 🧠 Model Details
+## 🔍 Features
 
-- Model: Logistic Regression
-- Features: TF-IDF vectorization of message text
-- Accuracy: ~80% (train/test split on sample dataset)
-- Dataset: Simulated healthcare/staff message dataset (200 messages)
+- 🔹 **Single Message Mode**  
+  Test and triage individual messages using dropdown or custom input
 
----
+- 📤 **Bulk Upload Dashboard**  
+  Upload a CSV of messages and view:
+  - Message classification
+  - Confidence score (🟢 / 🟠 / 🔴)
+  - Pie chart of message categories
+  - Downloadable output
 
-## 🛠️ Tech Stack
+- 🧠 **Confidence Score Logic**  
+  Displays model certainty and flags low-confidence predictions for manual review
 
-| Component | Tool |
-|----------|------|
-| UI | Streamlit |
-| Model | Scikit-learn |
-| Text Processing | NLTK, Regex |
-| Hosting | Streamlit Cloud |
-| Deployment | GitHub + Streamlit integration |
-
----
-
-## 📁 Project Files
-
-├── app.py # Streamlit app script
-├── triage_model.pkl # Trained NLP model
-├── tfidf_vectorizer.pkl # TF-IDF transformer
-├── requirements.txt # App dependencies
-
-yaml
-Copy
+- 🎨 **Clean UI with Streamlit**  
+  Fast, lightweight, and deployable by anyone in your team — no coding required
 
 ---
 
-## 🙋‍♂️ Created By
+## 🛠️ Under the Hood
+
+- **NLP Model**: TF-IDF + Random Forest  
+- **Preprocessing**: Lowercase, punctuation removal, stopword filtering  
+- **Framework**: Streamlit  
+- **Deployment**: Streamlit Cloud  
+- **Visuals**: Pie chart summary of tags
+
+---
+
+## 🎯 Why It Matters
+
+This tool is built to reflect **real-world healthcare workflows**, where staff receive 100s of messages daily.  
+By automating message classification, we improve:
+
+- 🕐 Response time  
+- 🧠 Focus on urgent issues  
+- 🧾 Operational efficiency  
+- 🧬 AI explainability with human oversight
+
+---
+
+## 🚀 Built & Maintained By
 
 **Dharmik Shah**  
-Healthcare + Pharmacy + AI + Product Mindset  
-📫 dharmik5040@gmail.com  
+- M.Pharm | PGDM-MBA in Healthcare Management  
+- AI Product & Healthcare Innovation Enthusiast   
+- [LinkedIn](https://www.linkedin.com/in/dharmikshah4/) | dharmik5040@gmail.com
 
 ---
 
-## 🔮 Future Ideas
-
-- Support multi-language triage  
-- Train on real-world datasets from hospitals  
-- Add message priority score and queue visualization
