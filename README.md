@@ -3,7 +3,6 @@
 This is a Streamlit app that classifies incoming messages (from patients, staff, or systems) into actionable categories such as `Refill Request`, `Complaint`, `Appointment Query`, and more. Built with real NLP logic, it simulates how modern healthcare systems can automate message triage for faster and smarter responses.
 
 🔗 **Live App**: [Try it now](https://nlp-message-triage-assistant-demo.streamlit.app/)  
-💻 **GitHub Repo**: [View code](https://github.com/Dharmik5040/nlp-message-triage-assistant)
 
 ---
 
