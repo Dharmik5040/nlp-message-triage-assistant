@@ -29,16 +29,44 @@ def confidence_level(c):
     else:
         return "🔴 Low"
 
-st.set_page_config(page_title="📊 NLP Message Insights", layout="wide")
+# App layout
+st.set_page_config(page_title="NLP Message Insights", layout="wide")
 st.title("📊 NLP Healthcare Message Insights Dashboard")
+
+# Sidebar info
+st.sidebar.title("ℹ️ About This App")
+st.sidebar.info(
+    "This tool uses NLP to classify healthcare-related messages into categories like:\n"
+    "- Refill Request\n"
+    "- Appointment Inquiry\n"
+    "- Complaint\n\n"
+    "Useful for clinics/pharmacies to auto-triage and manage message loads.\n\n"
+    "🟢 High Confidence = very likely accurate\n"
+    "🟠 Medium = worth reviewing\n"
+    "🔴 Low = manual check recommended"
+)
 
 mode = st.radio("Choose Mode:", ["🔹 Single Message", "📤 Upload CSV"])
 
+# --- Single message mode ---
 if mode == "🔹 Single Message":
-    message = st.text_area("✍️ Enter a message:")
+    examples = [
+        "",
+        "Can I refill my diabetes meds?",
+        "Is Dr. Mehta available on Friday?",
+        "Why are my pills late again?",
+        "Thank you for the reminder!",
+        "The pharmacy was closed again!",
+        "Can you send my prescription to another pharmacy?",
+        "Hi",
+        "How long will delivery take?"
+    ]
+    sample = st.selectbox("🧪 Try a sample message:", examples)
+    message = st.text_area("✍️ Or enter your own message:", value=sample, height=150)
+
     if st.button("🔍 Predict"):
         if message.strip() == "":
-            st.warning("Please enter a message.")
+            st.warning("⚠️ Please enter or select a message.")
         else:
             cleaned = clean_text(message)
             X = vectorizer.transform([cleaned])
@@ -49,8 +77,12 @@ if mode == "🔹 Single Message":
             st.success(f"📌 Predicted Tag: **{prediction}**")
             st.metric("📊 Confidence Score", f"{confidence*100:.1f}%", delta=level)
 
+            if confidence < 0.5:
+                st.warning("⚠️ Low confidence — message may need manual review.")
+
+# --- Bulk CSV mode ---
 else:
-    uploaded_file = st.file_uploader("📥 Upload a CSV with 'message' column", type=["csv"])
+    uploaded_file = st.file_uploader("📥 Upload a CSV with a 'message' column", type=["csv"])
 
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file)
