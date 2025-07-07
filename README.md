@@ -70,7 +70,7 @@ Copy
 **Dharmik Shah**  
 Healthcare + Pharmacy + AI + Product Mindset  
 📫 dharmik5040@gmail.com  
-🔗 [LinkedIn]((https://www.linkedin.com/in/dharmikshah4/)) 
+🔗 [LinkedIn](([https://www.linkedin.com/in/dharmikshah4/](https://www.linkedin.com/in/dharmikshah4/))) 
 
 ---
 
