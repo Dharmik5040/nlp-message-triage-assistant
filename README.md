@@ -1,53 +1,81 @@
 # 📬 NLP Message Triage Assistant
 
-This is a Streamlit app that classifies incoming messages (from patients, staff, or systems) into actionable categories such as `Refill Request`, `Complaint`, `Appointment Query`, and more. Built with real NLP logic, it simulates how modern healthcare systems can automate message triage for faster and smarter responses.
+This Streamlit app uses a trained NLP model to classify incoming messages (from patients or staff) into categories like `Refill Request`, `Appointment Inquiry`, or `Complaint`. It's designed as a practical AI assistant for healthcare or pharmacy operations.
 
-🔗 **Live App**: [Try it now](https://nlp-message-triage-assistant-demo.streamlit.app/)  
-
----
-
-## 💡 Use Case
-
-This tool helps clinics, pharmacies, or care managers automatically categorize messages to:
-- Reduce manual effort
-- Speed up patient communication
-- Triage high-priority requests faster
+🔗 **Live App**: [Try it now](https://nlp-message-triage-assistant-demo.streamlit.app/)
 
 ---
 
-## 🛠️ Features
+## 🧠 Problem Statement
 
-- 📝 Message input area
-- 🤖 ML-powered intent prediction
-- 📈 Confidence score output
-- 📥 Download result as CSV
-- 💬 Real NLP: lowercasing, stopwords, TF-IDF
+Clinics and pharmacies receive hundreds of daily messages. Manual triage slows down responses and wastes time. This assistant uses natural language processing to automatically tag messages and help staff prioritize them efficiently.
 
 ---
 
-## 📂 Files in This Repo
+## 💾 Example Inputs
 
-| File | Purpose |
-|------|---------|
-| `app.py` | Streamlit UI for classification |
-| `triage_model.pkl` | Trained logistic regression model |
-| `tfidf_vectorizer.pkl` | Vectorizer for converting text to features |
-| `requirements.txt` | Libraries for Streamlit Cloud |
-
----
-
-## 🤖 Model
-
-- **Type**: Logistic Regression (scikit-learn)
-- **Input**: Cleaned text messages
-- **Text Vectorization**: TF-IDF
-- **Training data**: Simulated real-world messages (refill, complaint, appointment, etc.)
-- **Accuracy**: ~80% on test set
+| Message | Predicted Tag |
+|--------|----------------|
+| “Can I refill my BP meds today?” | Refill Request |
+| “Is the doctor available tomorrow?” | Appointment Inquiry |
+| “You sent the wrong meds again.” | Complaint |
 
 ---
 
-## 🚀 How to Run Locally
+## ⚙️ How It Works
 
-```bash
-pip install -r requirements.txt
-streamlit run app.py
+- Cleans and processes text using NLTK
+- Converts messages to TF-IDF vectors
+- Predicts message category using Logistic Regression
+- Shows confidence score
+- Downloadable CSV of prediction result
+
+---
+
+## 🧠 Model Details
+
+- Model: Logistic Regression
+- Features: TF-IDF vectorization of message text
+- Accuracy: ~80% (train/test split on sample dataset)
+- Dataset: Simulated healthcare/staff message dataset (200 messages)
+
+---
+
+## 🛠️ Tech Stack
+
+| Component | Tool |
+|----------|------|
+| UI | Streamlit |
+| Model | Scikit-learn |
+| Text Processing | NLTK, Regex |
+| Hosting | Streamlit Cloud |
+| Deployment | GitHub + Streamlit integration |
+
+---
+
+## 📁 Project Files
+
+├── app.py # Streamlit app script
+├── triage_model.pkl # Trained NLP model
+├── tfidf_vectorizer.pkl # TF-IDF transformer
+├── requirements.txt # App dependencies
+
+yaml
+Copy
+
+---
+
+## 🙋‍♂️ Created By
+
+**Dharmik Shah**  
+Healthcare + Pharmacy + AI + Product Mindset  
+📫 dharmik5040@gmail.com  
+🔗 [LinkedIn](www.linkedin.com/in/dharmikshah4) 
+
+---
+
+## 🔮 Future Ideas
+
+- Support multi-language triage  
+- Train on real-world datasets from hospitals  
+- Add message priority score and queue visualization
